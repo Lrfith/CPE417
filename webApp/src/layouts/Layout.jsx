@@ -1,6 +1,5 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import AppRoutes from '../src/routes/AppRoutes'
 
 const Layout = () => {
   return (

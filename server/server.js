@@ -1,11 +1,11 @@
-const experss = require('express')
-const app = experss()
+const express = require('express')
+const app = express()
 const morgan = require('morgan')
 const { readdirSync } = require('fs')
 const cors = require('cors')
 
 app.use(morgan('dev'))
-app.use(experss.json())
+app.use(express.json())
 app.use(cors())
 
 readdirSync('./routes').map((r)=> app.use('/api', require(`./routes/${r}`)))

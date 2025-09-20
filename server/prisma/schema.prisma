@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Users {
+  user_id       Int       @id @default(autoincrement())
+  username      String    @unique @db.VarChar(50)
+  password_hash String    @db.VarChar(255)
+  phone         String?   @db.VarChar(20)
+  role          Role      @default(user)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  // Relations
+  addresses Addresses[]
+  adoptions Adoptions[]
+}
+
+model Addresses {
+  address_id  Int     @id @default(autoincrement())
+  user_id     Int
+  street      String? @db.VarChar(255)
+  city        String? @db.VarChar(100)
+  state       String? @db.VarChar(100)
+  postal_code String? @db.VarChar(20)
+  country     String? @db.VarChar(100)
+
+  // Relations
+  user Users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Cats {
+  cat_id     Int       @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  age        Int?
+  gender     Gender
+  breed      String?   @db.VarChar(100)
+  status     CatStatus @default(Available)
+  description String?
+
+  // Relations
+  adoptions Adoptions[]
+}
+
+model Adoptions {
+  adoption_id   Int       @id @default(autoincrement())
+  user_id       Int
+  cat_id        Int
+  adoption_date DateTime
+  status        AdoptionStatus @default(Pending)
+
+  // Relations
+  user Users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  cat  Cats  @relation(fields: [cat_id], references: [cat_id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum CatStatus {
+  Available
+  Adopted
+  Fostered
+}
+
+enum AdoptionStatus {
+  Pending
+  Approved
+}

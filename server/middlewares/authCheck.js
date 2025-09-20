@@ -1,0 +1,48 @@
+const jwt = require('jsonwebtoken')
+const prisma = require('../config/prisma')
+
+exports.authCheck = async (req, res, next) => {
+  try {
+    const headerToken = req.headers.authorization
+    if (!headerToken) {
+      return res.status(401).json({ message: "No token, authorization denied" })
+    }
+
+    // ดึง token ออกมา
+    const token = headerToken.split(" ")[1]
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = decoded // { username, role }
+
+    // หา user จาก DB
+    const user = await prisma.users.findFirst({
+      where: { username: req.user.username }
+    })
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid token: user not found" })
+    }
+
+    next()
+  } catch (err) {
+    console.error(err)
+    res.status(401).json({ message: "Token invalid or expired" })
+  }
+}
+
+exports.adminCheck = async (req, res, next) => {
+  try {
+    const { username } = req.user
+    const adminUser = await prisma.users.findFirst({
+      where: { username }
+    })
+
+    if (!adminUser || adminUser.role !== 'admin') {
+      return res.status(403).json({ message: 'Access Denied: Admin Only' })
+    }
+
+    next()
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Error: Admin access denied' })
+  }
+}
