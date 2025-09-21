@@ -12,6 +12,7 @@ import LayoutUser from '../layouts/LayoutUser'
 import Dashboard from '../pages/admin/Dashboard'
 import HomeUser from '../pages/user/HomeUser'
 import Manage from '../pages/admin/Manage'
+import InfoCat from '../pages/admin/InfoCat'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
 import ProtecRouteUser from './ProtecRouteUser'
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: "manage", element: <Manage /> },
+      { path: "infoCat", element: <InfoCat /> }
     ]
   },
   {
