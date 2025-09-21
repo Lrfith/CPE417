@@ -77,9 +77,6 @@
 | `/api/user/addresses`         | POST   | Add address for user        | `{ "street": "123 Main St", "city": "Bangkok", "state": "TH", "postal_code": "10110", "country": "Thailand" }` |
 | `/api/user/addresses`         | GET    | Get user addresses          | None                                                                 |
 
-#### add(num1, num2)
-
-Takes two numbers and returns the sum.
 
 
 ## License
