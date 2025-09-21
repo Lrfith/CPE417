@@ -14,6 +14,8 @@ import HomeUser from '../pages/user/HomeUser'
 import Manage from '../pages/admin/Manage'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
+import ProtecRouteUser from './ProtecRouteUser'
+import ProtectRouteAdmin from './ProtectRouteAdmin'
 
 const router = createBrowserRouter([
   {
@@ -30,7 +32,8 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <LayoutAdmin />,
+    // element: <LayoutAdmin />,
+    element: <ProtectRouteAdmin element={<LayoutAdmin/>}/>,
     children: [
       { index: true, element: <Dashboard /> },
       { path: "manage", element: <Manage /> },
@@ -38,7 +41,8 @@ const router = createBrowserRouter([
   },
   {
     path: "/user",
-    element: <LayoutUser />,
+    // element: <LayoutUser />,
+    element: <ProtecRouteUser element={<LayoutUser/>} />,
     children: [
       { index: true, element: <HomeUser /> },
     ]
