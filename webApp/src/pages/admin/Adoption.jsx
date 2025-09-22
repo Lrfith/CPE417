@@ -38,7 +38,7 @@ const AdminAdoptions = () => {
       <table className='table'>
         <thead>
           <tr>
-            <th>Cat ID</th>
+            <th>Adoption Date</th>
             <th>Cat Name</th>
             <th>Cat Gender</th>
             <th>User</th>
@@ -49,6 +49,7 @@ const AdminAdoptions = () => {
         <tbody>
           {adoptions.map((adopt) => (
             <tr key={adopt.adoption_id}>
+              <td>{adopt.adoption_date ? new Date(adopt.adoption_date).toLocaleDateString() : '-'}</td>
               <td>{adopt.cat_id}</td>
               <td>{adopt.cat.name}</td>
               <td>{adopt.cat.gender}</td>
@@ -73,7 +74,7 @@ const AdminAdoptions = () => {
 
   async function handleApprove(id) {
     try {
-      await axios.put(`http://localhost:5000/api/adoptions/${id}`, 
+      await axios.put(`http://localhost:5000/api/adoptions/${id}`,
         { status: 'Approved' },
         { headers: { Authorization: `Bearer ${token}` } }
       )
