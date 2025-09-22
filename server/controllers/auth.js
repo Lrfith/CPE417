@@ -2,6 +2,7 @@ const prisma = require("../config/prisma")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+// REGISTER
 exports.register = async (req, res) => {
   try {
     const { username, password } = req.body
@@ -9,28 +10,30 @@ exports.register = async (req, res) => {
       return res.status(400).json({ msg: "Username and Password is required" })
     }
 
-    const user = await prisma.users.findFirst({
-      where: { username }
-    })
-
-    if (user) return res.status(400).json({ msg: "Username already exists" })
+    const userExists = await prisma.users.findFirst({ where: { username } })
+    if (userExists) return res.status(400).json({ msg: "Username already exists" })
 
     const hashPassword = await bcrypt.hash(password, 10)
-
-    await prisma.users.create({
-      data: {
-        username,
-        password_hash: hashPassword,
-      }
+    const newUser = await prisma.users.create({
+      data: { username, password_hash: hashPassword }
     })
 
-    res.json({ msg: "Register success" })
+    // ส่ง token พร้อม user_id
+    const payload = {
+      user_id: newUser.user_id,
+      username: newUser.username,
+      role: newUser.role
+    }
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' })
+    res.status(201).json({ user: payload, token })
   } catch (error) {
     console.error(error)
     res.status(500).json({ msg: "Server Error" })
   }
 }
 
+// LOGIN
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body
@@ -38,35 +41,31 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: "Username and Password is required" })
     }
 
-    const user = await prisma.users.findFirst({
-      where: { username }
-    })
-
+    const user = await prisma.users.findFirst({ where: { username } })
     if (!user) return res.status(400).json({ msg: "Invalid Credentials" })
 
     const isMatch = await bcrypt.compare(password, user.password_hash)
     if (!isMatch) return res.status(400).json({ msg: "Invalid Credentials" })
 
     const payload = {
-      id: user.user_id,
+      user_id: user.user_id,   // ใช้ user_id แทน id
       username: user.username,
       role: user.role
     }
 
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' }, (err, token) => {
-      if (err) throw err
-      res.json({ payload, token })
-    })
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' })
+    res.json({ user: payload, token })
   } catch (error) {
     console.error(error)
     res.status(500).json({ msg: "Server Error" })
   }
 }
 
+// CURRENT USER
 exports.currentUser = async (req, res) => {
   try {
     const user = await prisma.users.findFirst({
-      where: { username: req.user.username },
+      where: { user_id: req.user.user_id },  // ใช้ user_id จาก token
       select: {
         user_id: true,
         username: true,
@@ -74,9 +73,7 @@ exports.currentUser = async (req, res) => {
       }
     })
 
-    if (!user) {
-      return res.status(404).json({ msg: "User not found" })
-    }
+    if (!user) return res.status(404).json({ msg: "User not found" })
 
     res.json({ user })
   } catch (error) {

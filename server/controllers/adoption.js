@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 exports.requestAdoption = async (req, res) => {
   try {
     const { cat_id } = req.body
-    const user_id = req.user.id  // มาจาก token (authCheck middleware)
+    const user_id = req.user.user_id  // แก้ไขตรงนี้
 
     // ตรวจว่าแมวมีอยู่ไหม
     const cat = await prisma.cats.findUnique({

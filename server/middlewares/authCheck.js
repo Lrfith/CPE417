@@ -8,18 +8,23 @@ exports.authCheck = async (req, res, next) => {
       return res.status(401).json({ message: "No token, authorization denied" })
     }
 
-    // ดึง token ออกมา
     const token = headerToken.split(" ")[1]
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    req.user = decoded // { username, role }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) // { username, role }
 
     // หา user จาก DB
     const user = await prisma.users.findFirst({
-      where: { username: req.user.username }
+      where: { username: decoded.username }
     })
 
     if (!user) {
       return res.status(401).json({ message: "Invalid token: user not found" })
+    }
+
+    // แนบ user_id เข้า req.user ด้วย
+    req.user = {
+      user_id: user.user_id,
+      username: user.username,
+      role: user.role
     }
 
     next()
@@ -28,6 +33,7 @@ exports.authCheck = async (req, res, next) => {
     res.status(401).json({ message: "Token invalid or expired" })
   }
 }
+
 
 exports.adminCheck = async (req, res, next) => {
   try {

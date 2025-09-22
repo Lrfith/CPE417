@@ -1,10 +1,10 @@
 import React from 'react'
-import FromManage from '../../components/admin/FromManage'
+import TableUsers from '../../components/admin/TableUsers'
 
 const Manage = () => {
   return (
     <div>
-      <FromManage />
+      <TableUsers />
     </div>
   )
 }
