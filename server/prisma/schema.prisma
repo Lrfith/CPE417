@@ -47,12 +47,12 @@ model Cats {
   name       String    @db.VarChar(100)
   age        Int?
   gender     Gender
-  breed      String?   @db.VarChar(100)
   status     CatStatus @default(Available)
   description String?
 
   // Relations
   adoptions Adoptions[]
+  images    Image[]
 }
 
 model Adoptions {
@@ -86,4 +86,15 @@ enum CatStatus {
 enum AdoptionStatus {
   Pending
   Approved
+}
+
+model Image {
+  cat_id         Int      @id @default(autoincrement())
+  asset_id   String
+  public_id  String
+  url        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  cat Cats @relation(fields: [cat_id], references: [cat_id], onDelete: Cascade, onUpdate: Cascade)
+
 }

@@ -17,6 +17,7 @@ import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
 import ProtecRouteUser from './ProtecRouteUser'
 import ProtectRouteAdmin from './ProtectRouteAdmin'
+import Adoption from '../pages/admin/Adoption'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: "manage", element: <Manage /> },
+      { path: "request", element: <Adoption/> },
       { path: "infoCat", element: <InfoCat /> }
     ]
   },

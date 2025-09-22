@@ -30,6 +30,17 @@ const SidebarAdmin = () => {
           <FileSliders className="mr-4" />
           Manage
         </NavLink>
+
+        <NavLink
+          to={"request"}
+          className={({ isActive }) =>
+            `flex items-center px-4 py-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
+          }
+        >
+          <FileSliders className="mr-4" />
+          Adoption Request
+        </NavLink>
+        
         <NavLink
           to={"infoCat"}
           className={({ isActive }) =>
@@ -37,7 +48,7 @@ const SidebarAdmin = () => {
           }
         >
           <SquareLibrary className="mr-4" />
-          Info Cat
+          Infomation Cat
         </NavLink>
 
       </nav>

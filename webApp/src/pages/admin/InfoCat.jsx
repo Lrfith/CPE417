@@ -1,9 +1,10 @@
 import React from 'react'
-
+import FromInfoCat from '../../components/admin/FromInfoCat'
 const InfoCat = () => {
   return (
     <div>
-Header Infocat
+        <FromInfoCat/>
+
     </div>
   )
 }
