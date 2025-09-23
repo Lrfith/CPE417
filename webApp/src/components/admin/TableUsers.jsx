@@ -49,7 +49,6 @@ const TableUsers = () => {
             <th>Phone</th>
             <th>Role</th>
             <th>Addresses</th>
-            <th>Adoptions</th>
           </tr>
         </thead>
         <tbody>
@@ -76,13 +75,7 @@ const TableUsers = () => {
                       .join(' | ')
                   : '-'}
               </td>
-              <td>
-                {user.adoptions?.length
-                  ? user.adoptions
-                      .map((adopt) => `${adopt.cat?.name || 'Unknown'} (${adopt.status})`)
-                      .join(' | ')
-                  : '-'}
-              </td>
+              
               <td>
                 {/* ถ้าอยากมีปุ่มจัดการเพิ่มเติมสามารถใส่ตรงนี้ */}
               </td>

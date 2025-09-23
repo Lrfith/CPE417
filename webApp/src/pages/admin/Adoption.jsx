@@ -49,7 +49,17 @@ const AdminAdoptions = () => {
         <tbody>
           {adoptions.map((adopt) => (
             <tr key={adopt.adoption_id}>
-              <td>{adopt.adoption_date ? new Date(adopt.adoption_date).toLocaleDateString() : '-'}</td>
+              <td>
+                {adopt.adoption_date
+                  ? (() => {
+                    const d = new Date(adopt.adoption_date)
+                    return `${d.getDate().toString().padStart(2, "0")}-${(d.getMonth() + 1)
+                      .toString()
+                      .padStart(2, "0")}-${d.getFullYear()}`
+                  })()
+                  : "-"}
+              </td>
+
               <td>{adopt.cat_id}</td>
               <td>{adopt.cat.name}</td>
               <td>{adopt.cat.gender}</td>

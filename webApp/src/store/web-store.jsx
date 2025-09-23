@@ -30,7 +30,9 @@ const webStore = (set) => ({
     } catch (error) {
       console.log(error)
     }
-  }
+  },
+  logout: () => set({ username: null, token: null }),
+
 })
 
 const usePersist = {

@@ -1,18 +1,26 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, LogOut, SquareLibrary, FileSliders } from 'lucide-react';
+import useWebStore from '../../store/web-store'
 
 const SidebarAdmin = () => {
+  const logout = useWebStore(state => state.logout) // ต้องสร้าง logout ใน store
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()          // ล้าง user + token
+    navigate("/login") // ไปหน้า login
+  }
+
   return (
     <div className='bg-gray-800 w-64 text-gray-100 flex flex-col h-screen'>
-
       <div className='h-24 bg-gray-900 flex items-center justify-center text-2xl font-bold'>
         Admin Panel
       </div>
 
       <nav className='flex-1 px-4 py-4 space-y-2'>
         <NavLink
-          to={"/admin"}
+          to="/admin"
           end
           className={({ isActive }) =>
             `flex items-center px-4 py-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
@@ -21,8 +29,9 @@ const SidebarAdmin = () => {
           <LayoutDashboard className="mr-4" />
           Dashboard
         </NavLink>
+
         <NavLink
-          to={"manage"}
+          to="manage"
           className={({ isActive }) =>
             `flex items-center px-4 py-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
           }
@@ -32,7 +41,7 @@ const SidebarAdmin = () => {
         </NavLink>
 
         <NavLink
-          to={"request"}
+          to="request"
           className={({ isActive }) =>
             `flex items-center px-4 py-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
           }
@@ -40,9 +49,9 @@ const SidebarAdmin = () => {
           <FileSliders className="mr-4" />
           Adoption Request
         </NavLink>
-        
+
         <NavLink
-          to={"infoCat"}
+          to="infoCat"
           className={({ isActive }) =>
             `flex items-center px-4 py-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
           }
@@ -50,18 +59,17 @@ const SidebarAdmin = () => {
           <SquareLibrary className="mr-4" />
           Infomation Cat
         </NavLink>
-
       </nav>
 
-      <div>
-        <NavLink
-          className={({ isActive }) =>
-            `flex items-center px-4 py-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
-          }
+      {/* Logout */}
+      <div className="px-4 py-4">
+        <button
+          onClick={handleLogout}
+          className="flex items-center px-4 py-2 w-full text-left rounded hover:bg-gray-700"
         >
-          <LogOut  className="mr-4" />
+          <LogOut className="mr-4" />
           Logout
-        </NavLink>
+        </button>
       </div>
     </div>
   )
