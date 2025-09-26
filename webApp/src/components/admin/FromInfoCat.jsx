@@ -5,25 +5,26 @@ import { toast } from 'react-toastify'
 import Uploadfile from './Uploadfile'
 
 const FromInfoCat = () => {
-  // const initialState = {
-  //   images: []
-  // }
+  const initialState = {
+    images: []
+  }
 
   const token = useWebStore((state) => state.token)
-  const fetchCats = useWebStore((state) => state.getCats)
-  const cats = useWebStore((state) => state.fetchCats)
-  const [cat_id, setCat_Id] = useState(null) // ใช้ null เวลาไม่ update
+  const cats = useWebStore((state) => state.fetchCats)   // ✅ array เก็บแมว
+  const fetchCats = useWebStore((state) => state.getCats) // ✅ function ดึงแมว
+
+
+  const [cat_id, setCat_Id] = useState(null)
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('')
   const [description, setDescription] = useState('')
 
-  // const [form, setForm] = useState(initialState)
-
+  const [form, setForm] = useState(initialState)
 
   useEffect(() => {
     fetchCats()
-  }, [])
+  }, [fetchCats])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,25 +32,39 @@ const FromInfoCat = () => {
       return toast.warning('Please fill all fields')
     }
 
-    const form = { name, age: Number(age), gender, description }
-
+    // const payload = {
+    //   name,
+    //   age: Number(age),
+    //   gender,
+    //   description,
+    //   images: form.images // ✅ แนบ images เข้า payload ด้วย
+    // }
+  const payload = {
+    name,
+    age: Number(age),
+    gender,
+    status: "Available", // default
+    description,
+    images: form.images   // ✅ ตอนนี้มี { asset_id, public_id, url }
+  }
     try {
       if (cat_id) {
-        // ถ้ามี cat_id → update
-        await updateCat(token, cat_id, form)
+        await updateCat(token, cat_id, payload)
         toast.success('Cat updated successfully!')
       } else {
-        // ถ้าไม่มี cat_id → create
-        await createCat(token, form)
+        await createCat(token, payload)
         toast.success('Cat created successfully!')
       }
-      // รีเซ็ต form
+
+      // reset form
       setCat_Id(null)
       setName('')
       setAge('')
       setGender('')
       setDescription('')
-      fetchCats() // refresh list
+      setForm(initialState)
+
+      fetchCats()
     } catch (error) {
       console.log(error)
       toast.error('Operation failed')
@@ -73,6 +88,7 @@ const FromInfoCat = () => {
     setAge(cat.age)
     setGender(cat.gender)
     setDescription(cat.description)
+    setForm({ images: cat.images || [] }) // ✅ โหลด images ตอน edit
   }
 
   return (
@@ -113,7 +129,10 @@ const FromInfoCat = () => {
           {cat_id ? 'Update' : 'Submit'}
         </button>
       </form>
-      {/* <Uploadfile form={form} setForm={setForm} /> */}
+
+      {/* Upload images */}
+      <Uploadfile form={form} setForm={setForm} />
+
       <hr />
       <table className='table'>
         <thead>
@@ -124,6 +143,7 @@ const FromInfoCat = () => {
             <th>Gender</th>
             <th>Status</th>
             <th>Description</th>
+            <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -136,6 +156,27 @@ const FromInfoCat = () => {
               <td>{item.gender}</td>
               <td>{item.status}</td>
               <td>{item.description}</td>
+              <td>
+                {Array.isArray(item.images) && item.images.length > 0
+                  ? item.images.map((img) => (
+                    <img
+                      key={img.id || img.asset_id}
+                      src={img.url || img.secure_url}
+                      alt={item.name}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                        marginRight: "5px",
+                      }}
+                    />
+                  ))
+                  : <span>No Image</span>
+                }
+              </td>
+
+
+
               <td>
                 <button
                   className="btn btn-warning mr-2 bg-yellow-400"
@@ -151,6 +192,7 @@ const FromInfoCat = () => {
                 </button>
               </td>
             </tr>
+
           ))}
         </tbody>
       </table>

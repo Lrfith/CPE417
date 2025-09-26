@@ -31,7 +31,6 @@ CREATE TABLE `Cats` (
     `name` VARCHAR(100) NOT NULL,
     `age` INTEGER NULL,
     `gender` ENUM('Male', 'Female') NOT NULL,
-    `breed` VARCHAR(100) NULL,
     `status` ENUM('Available', 'Adopted', 'Fostered') NOT NULL DEFAULT 'Available',
     `description` VARCHAR(191) NULL,
 
@@ -49,6 +48,19 @@ CREATE TABLE `Adoptions` (
     PRIMARY KEY (`adoption_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `Image` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `cat_id` INTEGER NOT NULL,
+    `asset_id` VARCHAR(191) NOT NULL,
+    `public_id` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Addresses` ADD CONSTRAINT `Addresses_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `Users`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -57,3 +69,6 @@ ALTER TABLE `Adoptions` ADD CONSTRAINT `Adoptions_user_id_fkey` FOREIGN KEY (`us
 
 -- AddForeignKey
 ALTER TABLE `Adoptions` ADD CONSTRAINT `Adoptions_cat_id_fkey` FOREIGN KEY (`cat_id`) REFERENCES `Cats`(`cat_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Image` ADD CONSTRAINT `Image_cat_id_fkey` FOREIGN KEY (`cat_id`) REFERENCES `Cats`(`cat_id`) ON DELETE CASCADE ON UPDATE CASCADE;

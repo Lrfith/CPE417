@@ -32,3 +32,12 @@ export const deleteCat = async (token, id) => {
     headers: { Authorization: `Bearer ${token}` },
   })
 }
+
+
+export const uploadFile = async (token, form) => {
+  return axios.post('http://localhost:5000/api/images',{
+    images: form
+  }, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+}

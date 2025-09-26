@@ -89,12 +89,13 @@ enum AdoptionStatus {
 }
 
 model Image {
-  cat_id         Int      @id @default(autoincrement())
-  asset_id   String
-  public_id  String
-  url        String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  cat Cats @relation(fields: [cat_id], references: [cat_id], onDelete: Cascade, onUpdate: Cascade)
+  id        Int      @id @default(autoincrement())
+  cat_id    Int
+  asset_id  String
+  public_id String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  cat Cats @relation(fields: [cat_id], references: [cat_id], onDelete: Cascade, onUpdate: Cascade)
 }
