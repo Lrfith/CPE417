@@ -39,6 +39,7 @@ const AdminAdoptions = () => {
         <thead>
           <tr>
             <th>Adoption Date</th>
+            <th>Cat ID</th>
             <th>Cat Name</th>
             <th>Cat Gender</th>
             <th>User</th>

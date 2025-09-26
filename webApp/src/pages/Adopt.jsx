@@ -1,39 +1,57 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import useWebStore from "../store/web-store";
 
 const Adopt = () => {
+  const cats = useWebStore((state) => state.fetchCats);   // array แมว
+  const getCats = useWebStore((state) => state.getCats);  // function ดึงแมว
+
+  useEffect(() => {
+    getCats();
+  }, [getCats]);
+
   return (
     <div>
+      {/* Adoption Highlight */}
+      <section className="py-16 bg-base-100">
+        <div className="container mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-10">แมวเป้าที่รอคุณอยู่</h2>
 
-
-      <div className="flex w-full flex-col">
-        <div className="card bg-base-300 rounded-box grid h-120 place-items-center">
-          {/* content */}
-          <div className="card bg-base-100 w-96 shadow-sm">
-            <figure>
-              <img
-                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                alt="Shoes" />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">
-                Card Title
-                <div className="badge badge-secondary">NEW</div>
-              </h2>
-              <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-              <div className="card-actions justify-end">
-                <div className="badge badge-outline">Fashion</div>
-                <div className="badge badge-outline">Products</div>
-              </div>
+          {cats.length === 0 ? (
+            <p className="text-gray-500">ยังไม่มีแมวในระบบ</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+              {cats.map((cat) => (
+                <div
+                  key={cat.cat_id}
+                  className="card bg-white shadow-xl hover:scale-105 hover:shadow-xl transition-transform"
+                >
+                  <figure>
+                    <img
+                      src={
+                        Array.isArray(cat.images) && cat.images.length > 0
+                          ? cat.images[0].url || cat.images[0].secure_url
+                          : "https://placekitten.com/400/300"
+                      }
+                      alt={cat.name}
+                      className="h-60 w-full object-cover"
+                    />
+                  </figure>
+                  <div className="card-body text-left">
+                    <h3 className="card-title">{cat.name}</h3>
+                    <p>
+                      {cat.gender} - อายุ {cat.age} ปี
+                    </p>
+                    <p>{cat.description}</p>
+                    <p className="text-gray-500">{cat.status}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
-        <div className="divider"></div>
-        <div className="card bg-base-300 rounded-box grid h-120 place-items-center">
-          {/* content */}
-        </div>
-      </div>
+      </section>
     </div>
-  )
-}
+  );
+};
 
-export default Adopt
+export default Adopt;
